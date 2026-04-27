@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>16歳からのインターネット教養講座</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Warm Neutrals (Stone-50 background, Slate-800 for text, White cards, Accents in Blue-600 for learning, Rose-600 for warnings) -->
+    <!-- Application Structure Plan: A single-page interactive presentation designed for co-viewing (parent and teen). It uses a clean, vertical scroll format with a sticky navigation sidebar on desktop. The structure is: 1. Introduction (The Internet is real life), 2. Mechanics (How data moves - demystifying the tech), 3. Failure Cases (High-resolution case studies with interactive reveals to show consequences), 4. Research Skills (How to verify information, directly addressing the prompt's request for research examples). -->
+    <!-- Visualization & Content Choices: 
+    1. Information Spread Simulation -> Goal: Demonstrate the speed of digital tattoos -> Line Chart (Chart.js) -> A button triggers a time-series animation showing how fast one post reaches millions. -> Library: Chart.js
+    2. Trouble Breakdown -> Goal: Show what actually happens to teens -> Doughnut Chart (Chart.js) -> Interactive hover -> Library: Chart.js
+    3. Case Study Cards -> Goal: Deep dive into failures -> Interactive HTML/Tailwind toggles -> Click to reveal the "Why" and "Result" to encourage critical thinking before the answer is given. -> No SVG/Mermaid used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; scroll-behavior: smooth; }
+        .chart-container { position: relative; width: 100%; max-width: 700px; margin-left: auto; margin-right: auto; height: 300px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .nav-active { border-left-color: #2563eb; color: #2563eb; font-weight: bold; background-color: #eff6ff; }
+        .reveal-content { display: none; }
+        .reveal-content.active { display: block; animation: fadeIn 0.4s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-panel { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-stone-50 text-slate-800 leading-relaxed">
+
+    <!-- Header / Navigation -->
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <nav class="md:w-64 bg-white shadow-md md:fixed h-auto md:h-screen z-10 p-6 overflow-y-auto">
+            <h1 class="text-2xl font-extrabold text-slate-900 mb-2">Web Survival<br>Guide</h1>
+            <p class="text-sm text-slate-500 mb-8">高校1年生のための<br>インターネット「教養」</p>
+            <ul class="space-y-2" id="nav-menu">
+                <li><a href="#intro" class="nav-link block px-4 py-2 border-l-4 border-transparent hover:bg-slate-50 transition-colors nav-active">0. はじめに</a></li>
+                <li><a href="#mechanism" class="nav-link block px-4 py-2 border-l-4 border-transparent hover:bg-slate-50 transition-colors">1. ネットの「裏側」</a></li>
+                <li><a href="#failures" class="nav-link block px-4 py-2 border-l-4 border-transparent hover:bg-slate-50 transition-colors">2. 失敗の解像度を上げる</a></li>
+                <li><a href="#spread" class="nav-link block px-4 py-2 border-l-4 border-transparent hover:bg-slate-50 transition-colors">3. 拡散の恐怖（シミュレーション）</a></li>
+                <li><a href="#research" class="nav-link block px-4 py-2 border-l-4 border-transparent hover:bg-slate-50 transition-colors">4. 必須スキルとしての「リサーチ」</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 md:ml-64 p-6 md:p-12 max-w-5xl">
+            
+            <!-- Section 0: Intro -->
+            <section id="intro" class="min-h-[80vh] flex flex-col justify-center mb-20 pt-10">
+                <div class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold mb-4 w-max">Chapter 0</div>
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 text-slate-900">スマホの画面の向こうには、<br><span class="text-blue-600">数十億人の「他人」</span>がいる。</h2>
+                <p class="text-lg md:text-xl text-slate-600 mb-8 max-w-3xl">
+                    高校生になり、スマホを使う時間も自由も増える時期。<br>
+                    インターネットは、世界中の情報にアクセスできる便利な道具であると同時に、使い方を間違えれば人生に深刻な影響を与える危険性も持っています。<br><br>
+                    親から「気をつけろ」と強要するのではなく、一人の大人として、世界の仕組みと<strong>「なぜ失敗するのか」のリアルな解像度</strong>を知るための教養講座です。
+                </p>
+            </section>
+
+            <!-- Section 1: Mechanism -->
+            <section id="mechanism" class="mb-24 scroll-mt-20">
+                <div class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold mb-4 w-max">Chapter 1</div>
+                <h3 class="text-3xl font-bold mb-6">ネットの仕組み：データは「物理的」に移動している</h3>
+                <p class="text-slate-600 mb-8">
+                    「クラウドに保存」「空を飛んでデータが来る」というイメージがあるかもしれませんが、インターネットの実態は非常に物理的です。データは海底ケーブルや無数のコンピューター（サーバー）を経由して届きます。
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <div class="text-4xl mb-4">📦</div>
+                        <h4 class="font-bold text-lg mb-2">1. パケット通信</h4>
+                        <p class="text-sm text-slate-600">動画や画像は、細かく分割された「パケット」という荷物になって送られます。一つ一つに送り主と宛先の住所（IPアドレス）が書かれています。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <div class="text-4xl mb-4">🌐</div>
+                        <h4 class="font-bold text-lg mb-2">2. IPアドレス</h4>
+                        <p class="text-sm text-slate-600">インターネット上の「住所」。あなたが掲示板に書き込んだり、SNSに投稿したりする際、匿名だと思っていても、この住所情報はサーバーに必ず記録されています。</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                        <div class="text-4xl mb-4">🗄️</div>
+                        <h4 class="font-bold text-lg mb-2">3. コピーの容易さ</h4>
+                        <p class="text-sm text-slate-600">デジタルデータは劣化せずに一瞬でコピーできます。「24時間で消えるから大丈夫」は嘘です。誰かのスマホに保存（スクショ）された瞬間、それは永遠に残ります。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Failure Cases -->
+            <section id="failures" class="mb-24 scroll-mt-20">
+                <div class="inline-block px-3 py-1 bg-rose-100 text-rose-800 rounded-full text-sm font-semibold mb-4 w-max">Chapter 2</div>
+                <h3 class="text-3xl font-bold mb-6">失敗の解像度を上げる：彼らはなぜ間違えたのか</h3>
+                <p class="text-slate-600 mb-8">
+                    「自分は大丈夫」と思う人ほど陥る罠があります。実際にあったケーススタディを通して、失敗の構造を分解してみましょう。各ケースのボタンをクリックして詳細を確認してください。
+                </p>
+
+                <!-- Case 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                    <div class="p-6 md:p-8 bg-slate-50 border-b border-slate-200 flex justify-between items-center cursor-pointer" onclick="toggleReveal('case1')">
+                        <div>
+                            <span class="text-xs font-bold text-rose-600 tracking-wider uppercase mb-1 block">Case Study 01</span>
+                            <h4 class="text-xl font-bold">「身内だけ」のつもりの悪ふざけ動画（バイトテロ）</h4>
+                        </div>
+                        <div class="text-2xl text-slate-400" id="icon-case1">＋</div>
+                    </div>
+                    <div id="case1" class="reveal-content p-6 md:p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="font-bold text-slate-800 mb-2 border-l-4 border-blue-500 pl-2">状況</h5>
+                                <p class="text-sm text-slate-600 mb-4">飲食店でのアルバイト中、備品を不適切に扱う動画を撮影。Instagramの「親しい友達」限定のストーリーズで24時間で消える設定で投稿した。</p>
+                                <h5 class="font-bold text-slate-800 mb-2 border-l-4 border-rose-500 pl-2">失敗の根本原因</h5>
+                                <p class="text-sm text-slate-600"><strong>「デジタルデータの性質」への無理解。</strong><br>「親しい友達」の中の誰かが画面録画（スクショ）をし、別のSNS（X等）の裏アカウントに転載。そこから第三者によって拡散された。</p>
+                            </div>
+                            <div class="bg-rose-50 p-4 rounded-lg">
+                                <h5 class="font-bold text-rose-800 mb-2">リアルな結末（ネット上に残る記録）</h5>
+                                <ul class="text-sm text-rose-700 space-y-2 list-disc ml-4">
+                                    <li>数時間で動画は数百万再生へ。</li>
+                                    <li>ネットの有志により、制服や背景から店舗、さらに個人の本名・通っている高校まで即座に特定される。</li>
+                                    <li>学校は<strong>退学処分</strong>。店側からは休業損害や清掃費用として<strong>数百万〜数千万円の損害賠償請求</strong>。</li>
+                                    <li>就職活動時、企業が名前を検索すると一生この事件の動画と記事が出てくる。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                    <div class="p-6 md:p-8 bg-slate-50 border-b border-slate-200 flex justify-between items-center cursor-pointer" onclick="toggleReveal('case2')">
+                        <div>
+                            <span class="text-xs font-bold text-rose-600 tracking-wider uppercase mb-1 block">Case Study 02</span>
+                            <h4 class="text-xl font-bold">正義感からのフェイクニュース拡散</h4>
+                        </div>
+                        <div class="text-2xl text-slate-400" id="icon-case2">＋</div>
+                    </div>
+                    <div id="case2" class="reveal-content p-6 md:p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h5 class="font-bold text-slate-800 mb-2 border-l-4 border-blue-500 pl-2">状況</h5>
+                                <p class="text-sm text-slate-600 mb-4">災害時、「動物園からライオンが逃げた！」という画像付きの投稿が流れてきた。「みんなに知らせて注意喚起しなきゃ！」と善意でリポスト（拡散）した。</p>
+                                <h5 class="font-bold text-slate-800 mb-2 border-l-4 border-rose-500 pl-2">失敗の根本原因</h5>
+                                <p class="text-sm text-slate-600"><strong>「一次情報」を確認するリサーチ計画の欠如。</strong><br>感情（焦り・正義感）が先行し、「誰が発信したのか」「画像は本物か」を調べるステップを飛ばしてしまった。</p>
+                            </div>
+                            <div class="bg-rose-50 p-4 rounded-lg">
+                                <h5 class="font-bold text-rose-800 mb-2">リアルな結末（加害者になるリスク）</h5>
+                                <ul class="text-sm text-rose-700 space-y-2 list-disc ml-4">
+                                    <li>画像は数年前の海外映画の撮影風景の流用（フェイク）だった。</li>
+                                    <li>デマが広がり、警察や役所、動物園への問い合わせが殺到。本来の災害救助業務が妨害された。</li>
+                                    <li><strong>「業務妨害罪」等で、最初に投稿した人物だけでなく、デマと知らずに拡散に大きく加担した人物も法的責任を問われる可能性がある。</strong>善意であっても罪になる。</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Visualization of Spread -->
+            <section id="spread" class="mb-24 scroll-mt-20">
+                <div class="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-semibold mb-4 w-max">Chapter 3</div>
+                <h3 class="text-3xl font-bold mb-6">可視化：情報拡散のスピード</h3>
+                <p class="text-slate-600 mb-6">
+                    「ちょっとした失言」がどのように広がるのか。1人が3人に共有し、その3人がさらに3人に共有する…という連鎖が起きると、数字は爆発的に増加します（指数関数的増加）。<br>
+                    下のボタンを押して、1時間ごとの拡散シミュレーションを見てみましょう。
+                </p>
+
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold text-slate-800">1投稿のビュー数推移シミュレーション</h4>
+                        <button id="start-sim-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-bold transition-colors">拡散をシミュレート</button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="spreadChart"></canvas>
+                    </div>
+                    <p class="text-sm text-center text-slate-500 mt-4" id="sim-status">グラフは停止しています。</p>
+                </div>
+            </section>
+
+            <!-- Section 4: Research Skills -->
+            <section id="research" class="mb-24 scroll-mt-20">
+                <div class="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-semibold mb-4 w-max">Chapter 4</div>
+                <h3 class="text-3xl font-bold mb-6">必須スキルとしての「リサーチ力」</h3>
+                <p class="text-slate-600 mb-8">
+                    インターネットの罠を避け、安全に活用するために最も必要なスキルが<strong>「リサーチ力（情報を正しく見極め、調べる力）」</strong>です。行き当たりばったりではなく、<strong>リサーチ計画</strong>を持つことが重要です。
+                </p>
+
+                <h4 class="text-2xl font-bold mb-4 border-b-2 border-emerald-500 inline-block pb-1">リサーチを成功させる3つのステップ</h4>
+                
+                <div class="space-y-6 mt-6">
+                    <div class="flex items-start gap-4 p-5 bg-white rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex-shrink-0 w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold text-xl">1</div>
+                        <div>
+                            <h5 class="text-lg font-bold mb-1">疑う（ソース・情報源の確認）</h5>
+                            <p class="text-slate-600 text-sm">その情報は誰が発信しているか？匿名のまとめサイトか、公的機関（官公庁、大学、信頼できる報道機関）か。URLのドメイン（.go.jp, .ac.jpなど）を確認する癖をつけましょう。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-5 bg-white rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex-shrink-0 w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold text-xl">2</div>
+                        <div>
+                            <h5 class="text-lg font-bold mb-1">探す（逆引き・複数キーワード）</h5>
+                            <p class="text-slate-600 text-sm">衝撃的な画像を見つけたら「Google画像検索」で元画像を調べる。一つの単語だけでなく、「〇〇 デマ」「〇〇 仕組み」など、反対の視点や関連用語でも検索して全体像を掴む（これがリサーチ計画の要です）。</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4 p-5 bg-white rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex-shrink-0 w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold text-xl">3</div>
+                        <div>
+                            <h5 class="text-lg font-bold mb-1">比較する（クロスチェック）</h5>
+                            <p class="text-slate-600 text-sm">複数の異なる情報源を見比べること。一つの意見だけを鵜呑みにせず、賛成派と反対派、両方の論理を読んでから自分の頭で結論を出します。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 bg-slate-800 text-white p-8 rounded-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">💡</div>
+                    <h4 class="text-xl font-bold mb-4 text-emerald-400">実例：リサーチ力で騙されなかったケース</h4>
+                    <p class="text-sm mb-4 leading-relaxed text-slate-300">
+                        SNSで「この投資アプリを使えば、1ヶ月で絶対に資金が2倍になる！高校生でも登録可能！」というインフルエンサーの投稿があった。コメント欄も「本当に稼げました！」で溢れている。
+                    </p>
+                    <div class="bg-slate-700 p-4 rounded-lg">
+                        <span class="font-bold text-emerald-300 block mb-2">【リサーチ計画の実行】</span>
+                        <ul class="list-disc ml-5 text-sm text-slate-200 space-y-1">
+                            <li><strong>疑う：</strong> 「絶対儲かる」は投資詐欺の典型的なフレーズ。コメント欄もサクラ（偽アカウント）の可能性がある。</li>
+                            <li><strong>探す：</strong> 「(アプリ名) 詐欺」「(アプリ名) 金融庁」でGoogle検索を実施。</li>
+                            <li><strong>比較・結論：</strong> 金融庁の「無登録業者」リストに該当の名前を発見。また、被害者の弁護団サイトが存在することを確認。結果、手を出さず被害を回避した。</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Footer -->
+            <footer class="border-t border-slate-200 pt-8 pb-12 text-center text-slate-500">
+                <p class="mb-2">仕組みを「知る」ことが、自分を守り、正しく活用するための第一歩になります。</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // 1. Navigation Highlighting on Scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('nav-active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('nav-active');
+                }
+            });
+        });
+
+        // 2. Interactive Case Study Toggles
+        function toggleReveal(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                icon.textContent = '＋';
+            } else {
+                content.classList.add('active');
+                icon.textContent = '－';
+            }
+        }
+
+        // 3. Chart.js: Viral Spread Simulation
+        const ctx = document.getElementById('spreadChart').getContext('2d');
+        let spreadChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['0h'],
+                datasets: [{
+                    label: '閲覧数（人）',
+                    data: [1],
+                    borderColor: '#ef4444', // Rose-500
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ef4444',
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: '閲覧者数' }
+                    },
+                    x: {
+                        title: { display: true, text: '経過時間（時間）' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y.toLocaleString() + ' 人が見ています';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const btnSim = document.getElementById('start-sim-btn');
+        const statusText = document.getElementById('sim-status');
+        let simInterval;
+
+        btnSim.addEventListener('click', () => {
+            // Reset chart
+            if (simInterval) clearInterval(simInterval);
+            spreadChart.data.labels = ['0h'];
+            spreadChart.data.datasets[0].data = [1];
+            spreadChart.update();
+            
+            btnSim.disabled = true;
+            btnSim.classList.add('opacity-50', 'cursor-not-allowed');
+            statusText.textContent = 'シミュレーション実行中... (1人が3人に拡散すると仮定)';
+            statusText.classList.add('text-rose-600', 'font-bold');
+
+            let hour = 1;
+            let currentViewers = 1;
+
+            simInterval = setInterval(() => {
+                if (hour > 10) {
+                    clearInterval(simInterval);
+                    btnSim.disabled = false;
+                    btnSim.classList.remove('opacity-50', 'cursor-not-allowed');
+                    statusText.textContent = '10時間で約6万人に到達。これがデジタルの拡散力です。';
+                    return;
+                }
+
+                // Exponential growth: each person shares to ~3 people
+                currentViewers = currentViewers * 3;
+                
+                spreadChart.data.labels.push(hour + 'h');
+                spreadChart.data.datasets[0].data.push(currentViewers);
+                spreadChart.update();
+                
+                hour++;
+            }, 500); // Update every 0.5 seconds
+        });
+    </script>
+</body>
+</html>
